@@ -1,0 +1,25 @@
+{
+  "name": "toy-auth-example-google-mysql",
+  "version": "1.0.0",
+  "description": "Toy authorization example - Google OAuth2 and mySQL",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "toy-auth-examples-google-mysql"
+  },
+  "author": "Ephraim Glick",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mysql": "^2.15.0",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0"
+  }
+}
