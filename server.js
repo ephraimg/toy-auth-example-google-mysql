@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const db = require('./db/database-mysql.js');
+const db = require('./db/orm.js'); 
 const authConfig = require('./auth-config.js');
 
 app.use(session({ 
@@ -21,12 +21,12 @@ const stat = __dirname + '/public';
 /////////////////* sessions */////////////////
 
 passport.serializeUser(function(user, done) {
-  done(null, user.googleId); 
+  done(null, user.google_id); 
 });
 
 passport.deserializeUser(function(googleId, done) {
-  db.findGoogleUser(googleId)
-    .then(results => done(null, results[0]))
+  db.Users.find({google_id: googleId})
+    .then(user => done(null, user))
     .catch(err => done(err, null));
 });
 
@@ -40,12 +40,15 @@ passport.use(new GoogleStrategy({
     callbackURL: '/auth/google/callback'
   },
   function(accessToken, refreshToken, profile, done) {
-    db.findGoogleUser(profile.id)
-      .then(results => {
-        if (results[0]) { return results; } 
-        else { return db.saveGoogleUser(profile); }
+    return db.Users.findOne({where: {google_id: profile.id} })
+      .then(user => {
+        if (user) { 
+          return done(null, user); 
+        } else { 
+          db.saveGoogleUser(profile)
+            .then(user => done(null, user))
+        }
       })
-      .then(results => done(null, results[0]))
       .catch(err => done(err, null));
   })
 );
